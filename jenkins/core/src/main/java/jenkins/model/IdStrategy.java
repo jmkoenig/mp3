@@ -231,47 +231,29 @@ public abstract class IdStrategy extends AbstractDescribableImpl<IdStrategy> imp
             } else {
                 StringBuilder buf = new StringBuilder(filename.length());
                 final char[] chars = filename.toCharArray();
-                for (int i = 0; i < chars.length; i++) {
-                    char c = chars[i];
-                    if ('a' <= c && c <= 'z') {
-                        buf.append(c);
-                    } else if ('0' <= c && c <= '9') {
-                        buf.append(c);
-                    } else if ('_' == c || '.' == c || '-' == c || ' ' == c || '@' == c) {
-                        buf.append(c);
-                    } else if (c == '~') {
-                        i++;
-                        if (i < chars.length) {
-                            buf.append(Character.toUpperCase(chars[i]));
-                        }
-                    } else if (c == '$') {
-                        StringBuilder hex = new StringBuilder(4);
-                        i++;
-                        if (i < chars.length) {
-                            hex.append(chars[i]);
-                        } else {
-                            break;
-                        }
-                        i++;
-                        if (i < chars.length) {
-                            hex.append(chars[i]);
-                        } else {
-                            break;
-                        }
-                        i++;
-                        if (i < chars.length) {
-                            hex.append(chars[i]);
-                        } else {
-                            break;
-                        }
-                        i++;
-                        if (i < chars.length) {
-                            hex.append(chars[i]);
-                        } else {
-                            break;
-                        }
-                        buf.append(Character.valueOf((char)Integer.parseInt(hex.toString(), 16)));
-                    }
+                outer: {
+                	for (int i = 0; i < chars.length; i++) {
+	                    char c = chars[i];
+	                    if ('a' <= c && c <= 'z') {
+	                        buf.append(c);
+	                    } else if ('0' <= c && c <= '9') {
+	                        buf.append(c);
+	                    } else if ('_' == c || '.' == c || '-' == c || ' ' == c || '@' == c) {
+	                        buf.append(c);
+	                    } else if (c == '~') {
+	                        i++;
+	                        if (i < chars.length) {
+	                            buf.append(Character.toUpperCase(chars[i]));
+	                        }
+	                    } else if (c == '$') {
+	                        StringBuilder hex = new StringBuilder(4);
+	                        for (int j = i+1; j < chars.length; j++) {
+	                        	hex.append(chars[j]);
+	                        }
+	                        buf.append(Character.valueOf((char)Integer.parseInt(hex.toString(), 16)));
+		                    break outer;    
+	                    }
+                	}
                 }
                 return buf.toString();
             }
