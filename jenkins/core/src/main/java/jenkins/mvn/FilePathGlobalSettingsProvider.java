@@ -39,7 +39,7 @@ public class FilePathGlobalSettingsProvider extends GlobalSettingsProvider {
         }
 
         try {
-            return tryBuildingFilePath(build, listener);
+            return tryBuildingFilePath(build, listener, this.path);
         } catch (Exception e) {
             throw new IllegalStateException("failed to prepare global settings.xml");
         }

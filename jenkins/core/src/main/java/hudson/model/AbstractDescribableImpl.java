@@ -48,10 +48,10 @@ public abstract class AbstractDescribableImpl<T extends AbstractDescribableImpl<
         return Jenkins.getInstance().getDescriptorOrDie(getClass());
     }
     
-    static public FilePath tryBuildingFilePath(AbstractBuild<?, ?> build, TaskListener listener)
+    static public FilePath tryBuildingFilePath(AbstractBuild<?, ?> build, TaskListener listener, String path)
 			throws IOException, InterruptedException {
 		EnvVars env = build.getEnvironment(listener);
-		String targetPath = Util.replaceMacro(this.path, build.getBuildVariableResolver());
+		String targetPath = Util.replaceMacro(path, build.getBuildVariableResolver());
 		targetPath = env.expand(targetPath);
 
 		if (IOUtils.isAbsolute(targetPath)) {

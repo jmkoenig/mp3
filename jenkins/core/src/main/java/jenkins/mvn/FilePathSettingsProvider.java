@@ -38,7 +38,7 @@ public class FilePathSettingsProvider extends SettingsProvider {
         }
 
         try {
-        	return tryBuildingFilePath(build, listener);
+        	return tryBuildingFilePath(build, listener, this.path);
         } catch (Exception e) {
             throw new IllegalStateException("failed to prepare settings.xml");
         }
