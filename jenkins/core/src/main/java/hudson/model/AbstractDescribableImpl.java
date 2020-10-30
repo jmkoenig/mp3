@@ -23,7 +23,14 @@
  */
 package hudson.model;
 
+import java.io.File;
+import java.io.IOException;
+
+import hudson.EnvVars;
 import hudson.Extension;
+import hudson.FilePath;
+import hudson.Util;
+import hudson.util.IOUtils;
 import jenkins.model.Jenkins;
 
 /**
@@ -40,5 +47,27 @@ public abstract class AbstractDescribableImpl<T extends AbstractDescribableImpl<
     public Descriptor<T> getDescriptor() {
         return Jenkins.getInstance().getDescriptorOrDie(getClass());
     }
+    
+    static public FilePath tryBuildingFilePath(AbstractBuild<?, ?> build, TaskListener listener)
+			throws IOException, InterruptedException {
+		EnvVars env = build.getEnvironment(listener);
+		String targetPath = Util.replaceMacro(this.path, build.getBuildVariableResolver());
+		targetPath = env.expand(targetPath);
+
+		if (IOUtils.isAbsolute(targetPath)) {
+		    return new FilePath(new File(targetPath));
+		} else {
+		    FilePath mrSettings = build.getModuleRoot().child(targetPath);
+		    FilePath wsSettings = build.getWorkspace().child(targetPath);
+		    try {
+		        if (!wsSettings.exists() && mrSettings.exists()) {
+		            wsSettings = mrSettings;
+		        }
+		    } catch (Exception e) {
+		        throw new IllegalStateException("failed to find settings.xml at: " + wsSettings.getRemote());
+		    }
+		    return wsSettings;
+		}
+	}
 
 }

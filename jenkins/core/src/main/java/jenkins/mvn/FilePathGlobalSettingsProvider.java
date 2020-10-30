@@ -39,24 +39,7 @@ public class FilePathGlobalSettingsProvider extends GlobalSettingsProvider {
         }
 
         try {
-            EnvVars env = build.getEnvironment(listener);
-            String targetPath = Util.replaceMacro(this.path, build.getBuildVariableResolver());
-            targetPath = env.expand(targetPath);
-
-            if (IOUtils.isAbsolute(targetPath)) {
-                return new FilePath(new File(targetPath));
-            } else {
-                FilePath mrSettings = build.getModuleRoot().child(targetPath);
-                FilePath wsSettings = build.getWorkspace().child(targetPath);
-                try {
-                    if (!wsSettings.exists() && mrSettings.exists()) {
-                        wsSettings = mrSettings;
-                    }
-                } catch (Exception e) {
-                    throw new IllegalStateException("failed to find settings.xml at: " + wsSettings.getRemote());
-                }
-                return wsSettings;
-            }
+            return tryBuildingFilePath(build, listener);
         } catch (Exception e) {
             throw new IllegalStateException("failed to prepare global settings.xml");
         }
