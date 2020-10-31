@@ -1,0 +1,7 @@
+q1: This code smell is duplicated code. You can extract the duplicated code and create a new method from it, then simply call the method in all the instances of duplication.
+
+q3: This code smell is feature envy. The updateAndTrim() method in the Nodes class "wished" it were in the Jenkins class since it only called methods that were in the Jenkins class. The solution was to move it there.
+
+q4: This code could either be extracted to a new method, or even be reduced into a for loop.
+
+q6: The duplicated code could be eliminated by extracting to a new method.
